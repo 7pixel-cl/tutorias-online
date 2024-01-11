@@ -1,5 +1,9 @@
 const TestPage = () => {
-    return <>This is a test page!</>;
+    return (
+        <div>
+            <h1>Test Page</h1>
+        </div>
+    );
 };
 
 export default TestPage;
