@@ -74,7 +74,7 @@ model Chapter {
 
 model MuxData{
   id String @id @default(uuid())
-  playbackId String
+  playbackId String?
   assetId String
 
 
@@ -135,4 +135,4 @@ model StripeCustumer {
 
 
 // npx prisma generate
-// npx prism db push 
+// npx prisma db push 
