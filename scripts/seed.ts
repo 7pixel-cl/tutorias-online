@@ -12,6 +12,15 @@ async function main() {
                 { name: 'Biology' },
                 { name: 'English' },
                 { name: 'History' },
+                { name: 'Geography' },
+                { name: 'Economics' },
+                { name: 'Business' },
+                { name: 'Psychology' },
+                { name: 'Sociology' },
+                { name: 'Accounting' },
+                { name: 'Art' },
+                { name: 'Music' },
+                { name: 'Other' },
             ],
         });
     } catch (error) {

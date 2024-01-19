@@ -6,6 +6,7 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 model Course {
@@ -26,22 +27,22 @@ model Course {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
   @@index([categoryId])
+  @@fulltext([title])
 }
 
 model Category {
   id String @id @default(uuid())
   name String @unique
   courses Course[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Attachment {
   id String @id @default(uuid())
   name String
   url String @db.Text
+
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
@@ -50,10 +51,11 @@ model Attachment {
 
   @@index([courseId])
 }
+
 model Chapter {
   id String @id @default(uuid())
   title String
-  description String?
+  description String? @db.Text
   videoUrl String? @db.Text
   position Int
   isPublished Boolean @default(false)
@@ -63,8 +65,8 @@ model Chapter {
 
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  
-  userProgresses UserProgress[]
+
+  userProgress UserProgress[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -72,24 +74,22 @@ model Chapter {
   @@index([courseId])
 }
 
-model MuxData{
+model MuxData {
   id String @id @default(uuid())
-  playbackId String?
   assetId String
-
+  playbackId String?
 
   chapterId String @unique
   chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model UserProgress {
   id String @id @default(uuid())
   userId String
+
   chapterId String
-  chapter Chapter @relation(fields: [chapterId], references: [id])
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
   isCompleted Boolean @default(false)
 
   createdAt DateTime @default(now())
@@ -102,37 +102,25 @@ model UserProgress {
 model Purchase {
   id String @id @default(uuid())
   userId String
+
   courseId String
   course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
-  amount Float
-  currency String
-  paymentId String
-  paymentStatus String
-  paymentResponse Json
-
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt()
 
-  @@index([userId])
+  @@unique([userId, courseId])
   @@index([courseId])
 }
 
-model StripeCustumer {
+model StripeCustomer {
   id String @id @default(uuid())
   userId String @unique
-  stripeCustomerId String
-  stripeSubscriptionId String
-  stripeSubscriptionStatus String
-  stripeSubscriptionItemId String
-  stripeSubscriptionCurrentPeriodEnd DateTime
+  stripeCustomerId String @unique
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([userId])
 }
-
-
-// npx prisma generate
-// npx prisma db push 
+//npx prisma generate
+//npx prisma db push
+//npx prisma migrate reset
